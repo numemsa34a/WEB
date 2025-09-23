@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>JLXTrades — Compare Prop Firms</title>
+    <meta name="description"
+        content="Compare futures prop firm challenges by drawdown method, account size, steps, price and more." />
+    <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body class="compare-page">
+    <header>
+        <div class="container nav">
+            <a class="brand" href="index.html">
+                <span class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" aria-label="Logo">
+                        <path d="M12 2l3.5 6.8 7.5 1.1-5.5 5.2 1.3 7.4L12 18.6 5.2 22.5 6.5 15 1 9.9l7.5-1.1L12 2z" />
+                    </svg>
+                </span>
+                <span>JLXTrades</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#features">Features</a>
+                <a href="index.html#deals">Deals</a>
+                <a href="compare.html">Compare</a>
+                <a href="index.html#faq">FAQ</a>
+            </nav>
+            <div class="nav-actions" style="display:flex; gap:10px; align-items:center;">
+                <button id="themeToggle" class="toggle" aria-label="Toggle theme" title="Toggle light/dark">
+                    <svg id="sunIcon" viewBox="0 0 24 24">
+                        <path
+                            d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm9.83-19.16l-1.79-1.79-1.8 1.79 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.79 1.41 1.41 1.79-1.79-1.4-1.41zM17.24 4.84l1.8-1.79-1.41-1.41-1.79 1.79 1.4 1.41zM12 6a6 6 0 100 12 6 6 0 000-12z" />
+                    </svg>
+                    <span id="toggleLabel">Light</span>
+                </button>
+                <a class="cta-btn" href="index.html#deals">Use Code: JLXTRADES</a>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="container" style="padding-top:28px;">
+            <h1 class="section-title" style="margin-bottom:4px;">Futures Prop Firm Challenges</h1>
+            <p class="section-subtitle">Filter and sort to find the right account quickly.</p>
+
+            <!-- Filters -->
+            <div class="card" style="margin:16px 0;" data-move>
+                <div class="compare-filters">
+                    <div class="filter-group">
+                        <label>Drawdown Method</label>
+                        <select id="fDrawdown">
+                            <option>All</option>
+                            <option>EOD</option>
+                            <option>Intraday Trailing</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Account Size</label>
+                        <select id="fAccount">
+                            <option>All</option>
+                            <option>25K</option>
+                            <option>50K</option>
+                            <option>100K</option>
+                            <option>150K</option>
+                            <option>200K</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Steps</label>
+                        <select id="fSteps">
+                            <option>All</option>
+                            <option>1 Step</option>
+                            <option>2 Step</option>
+                            <option>3 Step</option>
+                            <option>Instant Funded</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>Price</label>
+                        <select id="fPriceType">
+                            <option>All</option>
+                            <option>Monthly</option>
+                            <option>One-Time</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="card" data-move>
+                <div class="compare-table-wrap">
+                    <table class="compare-table" id="compareTable">
+                        <thead>
+                            <tr>
+                                <th data-sort="name">PropFirm Name</th>
+                                <th data-sort="accountSize">Account Size</th>
+                                <th data-sort="steps">Steps</th>
+                                <th data-sort="activationFee">Activation Fee</th>
+                                <th data-sort="maxContracts">Max Contract Size<br><small>(Mini | Micros)</small></th>
+                                <th data-sort="profitTarget">Profit Target</th>
+                                <th data-sort="dailyLoss">Daily Loss</th>
+                                <th data-sort="maxLoss">Max Loss</th>
+                                <th data-sort="profitSplit">Profit Split</th>
+                                <th data-sort="payoutFreq">Payout Frequency</th>
+                                <th data-sort="priceAmount">Price</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="compareBody">
+                            <!-- rows injected by compare.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container"
+            style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="brand-logo" aria-hidden="true" style="width:28px;height:28px;border-radius:10px;"><svg
+                        viewBox="0 0 24 24">
+                        <path fill="#fff"
+                            d="M12 2l3.5 6.8 7.5 1.1-5.5 5.2 1.3 7.4L12 18.6 5.2 22.5 6.5 15 1 9.9l7.5-1.1L12 2z" />
+                    </svg></div>
+                <strong>JLXTrades</strong>
+            </div>
+            <div>© <span id="year"></span> JLXTrades. Perks for futures traders.</div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script src="compare.js"></script>
+</body>
+
+</html>
