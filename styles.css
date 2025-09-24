@@ -72,7 +72,7 @@
 
     /* Sections */
     section { padding: 50px 0; }
-    .section-title { font-size: clamp(22px, 3.5vw, 34px); line-height: 1.08; margin: 0 0 12px; }
+    .section-title { font-size: clamp(50px, 3.5vw, 34px); line-height: 1.08; margin: 0 0 12px; }
     .section-subtitle { color: var(--muted); max-width: 760px; }
 
     .grid { display: grid; gap: 18px; }
@@ -449,4 +449,177 @@ html[data-theme="light"] .price-badge {
       color-mix(in oklab, var(--accent) 96%, white 4%),
       var(--accent));
   border-color: color-mix(in oklab, var(--accent), black 12%);
+}
+
+
+/* Promo card (self-contained, won't clash with .card) */
+.promo-card {
+  position: relative;
+  width: 100%;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 1.5rem;
+  padding: 1.25rem;
+  box-shadow: 0 6px 18px color-mix(in oklab, black, transparent 85%);
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.promo-card:hover {
+  transform: translateY(-6px) scale(1.02);
+}
+
+.promo-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(250px circle at var(--promo-x, 50%) var(--promo-y, 50%),
+      color-mix(in oklab, var(--accent) 30%, transparent),
+      transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.promo-card:hover::before {
+  opacity: 1;
+}
+
+.promo-card .icon {
+  font-size: 1.75rem;
+  margin-bottom: .5rem;
+}
+
+.promo-card h3 {
+  margin: 0 0 .5rem;
+  font-size: 1.2rem;
+}
+
+.promo-card p {
+  font-size: .95rem;
+  line-height: 1.5;
+}
+
+/* CTA specific to this card (keeps your other buttons unchanged) */
+.promo-cta {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: .6rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--accent) 96%, white 4%),
+      var(--accent));
+  border: 1px solid color-mix(in oklab, var(--accent), black 18%);
+  transition: transform .12s ease, filter .12s ease, box-shadow .2s ease;
+}
+
+html:not([data-theme="light"]) .promo-cta {
+  background: linear-gradient(180deg,
+      color-mix(in oklab, var(--accent) 80%, black 20%),
+      color-mix(in oklab, var(--accent) 70%, black 28%));
+  border-color: color-mix(in oklab, var(--accent), black 42%);
+}
+
+.promo-cta:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.06);
+}
+
+.promo-cta:active {
+  transform: translateY(0);
+  filter: brightness(.98);
+}
+
+/* Smaller, cleaner subtitle */
+.hero-subtitle {
+  text-align: center;
+  margin: 0 auto 18px !important;
+  font-weight: 800;
+  font-size: clamp(16px, 2.4vw, 26px);
+  /* was bigger */
+  line-height: 1.28;
+  max-width: 900px;
+  text-wrap: balance;
+}
+
+/* Crisp accent word (no blur) */
+.word-free {
+  position: relative;
+  display: inline-block;
+  color: var(--accent, #4f46e5);
+  /* solid accent text */
+  font-weight: 1000;
+  letter-spacing: .01em;
+}
+
+/* Subtle underline highlight (gentle glow, no blur) */
+.word-free::after {
+  content: '';
+  position: absolute;
+  left: -0.05em;
+  right: -0.05em;
+  bottom: .05em;
+  height: .18em;
+  border-radius: .18em;
+  background: color-mix(in oklab, var(--accent, #4f46e5) 22%, white 78%);
+  opacity: .38;
+  pointer-events: none;
+  animation: free-underline 4.5s ease-in-out infinite;
+}
+
+/* very gentle breathing of the underline (no shimmer on text) */
+@keyframes free-underline {
+
+  0%,
+  100% {
+    opacity: .34;
+  }
+
+  50% {
+    opacity: .48;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .word-free::after {
+    animation: none;
+  }
+}
+
+/* Feature cards: inline emoji + title, emoji is "naked" */
+.feature-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.feature-emoji {
+  display: inline-block;
+  font-size: 1.4rem;
+  /* adjust if you want bigger/smaller */
+  line-height: 1;
+  background: none;
+  border: none;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 0;
+}
+
+.feature-card h3 {
+  font-weight: 900;
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+/* If you previously added a .feature-card .icon style, neutralize it here */
+.feature-card .icon {
+  display: none;
 }

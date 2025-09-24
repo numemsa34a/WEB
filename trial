@@ -1,0 +1,26 @@
+<div class="stats">
+        <div class="card kpi" data-move>
+          <div class="value">JLXTRADES</div>
+          <div class="label">One code across partners</div>
+        </div>
+        <div class="card kpi" data-move>
+          <div class="value">Premium Discord</div>
+          <div class="label">Live Market Charts • Market Reviews</div>
+        </div>
+        <div class="card kpi" data-move>
+          <div class="value">Pro Strategy Videos</div>
+          <div class="label">Day Trading strategy Videos</div>
+        </div>
+        <div class="card kpi" data-move>
+          <div class="value">Risk Management Videos</div>
+          <div class="label">Risk Management in Futures Firms</div>
+        </div>
+        <div class="card kpi" data-move>
+          <div class="value">Psychology Videos</div>
+          <div class="label">Psychology in Futures Firms</div>
+        </div>
+        <div class="card kpi" data-move>
+          <div class="value">Live Q&A Sessions</div>
+          <div class="label">Ask Your Doubts Live</div>
+        </div>
+      </div>

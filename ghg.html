@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>JLXTrades Deal Card</title>
+  <style>
+    :root {
+      --card-bg: #fff;
+      --card-border: rgba(0,0,0,0.1);
+      --text-color: #222;
+      --highlight: rgba(0, 200, 255, 0.3);
+      --shadow: rgba(0,0,0,0.15);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --card-bg: #1c1c1c;
+        --card-border: rgba(255,255,255,0.1);
+        --text-color: #f5f5f5;
+        --highlight: rgba(0, 200, 255, 0.2);
+        --shadow: rgba(0,0,0,0.6);
+      }
+    }
+
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: var(--card-bg);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .card {
+      position: relative;
+      width: 320px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 1.5rem;
+      padding: 1.5rem;
+      box-shadow: 0 6px 18px var(--shadow);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.25s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.02);
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), var(--highlight), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .card:hover::before {
+      opacity: 1;
+    }
+
+    .icon {
+      font-size: 2rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .card h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.4rem;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    .cta {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.6rem 1.2rem;
+      background: #00c8ff;
+      color: #fff;
+      font-weight: 600;
+      border-radius: 999px;
+      text-decoration: none;
+      transition: background 0.3s ease;
+    }
+
+    .cta:hover {
+      background: #00a5d6;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="icon">💹</div>
+    <h3>TopStep Futures — 20% OFF</h3>
+    <p>Other codes = discount only.<br>
+    With <strong>JLXTrades</strong>, you get:<br>
+    🎁 Free Discord access<br>
+    🎥 Strategy videos<br>
+    🚀 Extra trading perks instantly</p>
+    <a href="#" class="cta">Claim with JLXTrades</a>
+  </div>
+
+  <script>
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.setProperty('--x', `${x}%`);
+        card.style.setProperty('--y', `${y}%`);
+      });
+    });
+  </script>
+</body>
+</html>
+
+
+
+<p class="subtitle">We partners with leading futures prop firms to bring you more than just discounts. Use Code
+  JLXTRADES at checkout to
+  save on your prop evaluation and get free access to our premium Discord, beginner-friendly trading lessons, and
+  exclusive tools—everything for absolutely free at no extra cost.</p>
+
+
+
+
+  <div class="grid cols-3" style="margin-top:28px;">
+    <article class="card" data-move>
+      <div class="feature-mini" style="display:flex; align-items:center; gap:12px;">
+        <span class="mini-icon"
+          style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(34,197,94,.12);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px">
+            <path fill="#22c55e"
+              d="M12 2l7 4v6c0 5-3.5 9.5-7 10-3.5-.5-7-5-7-10V6l7-4zm-1 13l6-6-1.4-1.4L11 12.2l-2.6-2.6L7 11l4 4z" />
+          </svg>
+        </span>
+        <div>
+          <h3 style="margin:0 0 6px;">Verified Prop Partners</h3>
+          <p class="section-subtitle" style="margin:0">We only list reputable futures firms. Deals are tested and kept
+            current.
+          </p>
+        </div>
+      </div>
+    </article>
+    <article class="card" data-move>
+      <div class="feature-mini" style="display:flex; align-items:center; gap:12px;">
+        <span class="mini-icon"
+          style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(37,99,235,.12);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px">
+            <path fill="#2563eb" d="M12 2a10 10 0 100 20 10 10 0 000-20zm-1 15l-5-5 1.4-1.4L11 13.2l6.6-6.6L19 8l-8 9z" />
+          </svg>
+        </span>
+        <div>
+          <h3 style="margin:0 0 6px;">One Code, Easy Savings</h3>
+          <p class="section-subtitle" style="margin:0">Use <strong>JLXTRADES</strong> across supported partners—no hunting
+            for coupons.</p>
+        </div>
+      </div>
+    </article>
+    <article class="card" data-move>
+      <div class="feature-mini" style="display:flex; align-items:center; gap:12px;">
+        <span class="mini-icon"
+          style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(168,85,247,.12);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px">
+            <path fill="#a855f7" d="M12 4a8 8 0 100 16 8 8 0 000-16zm1 9h5v-2h-5V6h-2v5H6v2h5v5h2v-5z" />
+          </svg>
+        </span>
+        <div>
+          <h3 style="margin:0 0 6px;">Premium Discord Access</h3>
+          <p class="section-subtitle" style="margin:0">Get our members-only server: live Q&A, trade reviews,
+            accountability.
+          </p>
+        </div>
+      </div>
+    </article>
+    <article class="card" data-move>
+      <div class="feature-mini" style="display:flex; align-items:center; gap:12px;">
+        <span class="mini-icon"
+          style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(244,63,94,.12);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px">
+            <path fill="#f43f5e" d="M12 3a9 9 0 00-9 9h2a7 7 0 01-14 0H3a9 9 0 009 9z" />
+          </svg>
+        </span>
+        <div>
+          <h3 style="margin:0 0 6px;">Free Learning Videos</h3>
+          <p class="section-subtitle" style="margin:0">Access structured videos covering platform setup, evaluations, and
+            risk.
+          </p>
+        </div>
+      </div>
+    </article>
+    <article class="card" data-move>
+      <div class="feature-mini" style="display:flex; align-items:center; gap:12px;">
+        <span class="mini-icon"
+          style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(234,179,8,.12);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px">
+            <path fill="#eab308" d="M3 12l18-9-9 18-2-7-7-2z" />
+          </svg>
+        </span>
+        <div>
+          <h3 style="margin:0 0 6px;">Priority Support</h3>
+          <p class="section-subtitle" style="margin:0">Have questions? Ping us on Discord or email—real humans, fast
+            replies.</p>
+        </div>
+      </div>
+    </article>
+    <article class="card" data-move>
+      <div class="feature-mini" style="display:flex; align-items:center; gap:12px;">
+        <span class="mini-icon"
+          style="width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:rgba(251,191,36,.12);">
+          <svg viewBox="0 0 24 24" style="width:18px;height:18px">
+            <path fill="#fbbf24"
+              d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+        </span>
+        <div>
+          <h3 style="margin:0 0 6px;">Members-Only Perks</h3>
+          <p class="section-subtitle" style="margin:0">Occasional giveaways, templates, and extra discounts just for JLX
+            members.</p>
+        </div>
+      </div>
+    </article>
+  </div>
