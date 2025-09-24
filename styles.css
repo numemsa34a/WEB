@@ -43,7 +43,7 @@
     .toggle { border: 1px solid var(--border); padding: 8px 12px; border-radius: 999px; background: var(--bg-elev); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; }
     .toggle svg { width: 18px; height: 18px; }
 
-    .cta-btn { padding: 10px 16px; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--cta), black 10%); background: linear-gradient(180deg, color-mix(in oklab, var(--cta) 90%, white 10%), var(--cta)); color: white; font-weight: 800; box-shadow: 0 8px 20px color-mix(in oklab, var(--cta), black 80%); }
+    .cta-btn { font-size: clamp(12px, 3vw, 8px); padding: 10px 16px; border-radius: 999px; border: 1px solid color-mix(in oklab, var(--cta), black 10%); background: linear-gradient(180deg, color-mix(in oklab, var(--cta) 90%, white 10%), var(--cta)); color: white; font-weight: 800; box-shadow: 0 8px 20px color-mix(in oklab, var(--cta), black 80%); }
 
     /* Hero */
     .hero { padding: 60px 0 24px; display: grid; gap: 28px; }
