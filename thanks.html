@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Thanks — JLXTrades</title>
+    <meta name="description" content="Thanks for contacting JLXTrades. We received your message." />
+    <link rel="stylesheet" href="styles.css" />
+
+    <!-- Page-specific polish -->
+    <style>
+        .thanks-hero {
+            display: grid;
+            place-items: center;
+            min-height: calc(100dvh - 140px);
+            /* leave room for header/footer */
+            padding: 24px 0;
+        }
+
+        .thanks-card .emoji {
+            font-size: 40px;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .thanks-title {
+            margin: 0 0 6px;
+            font-weight: 1000;
+            font-size: clamp(22px, 2.8vw, 28px);
+        }
+
+        .thanks-sub {
+            margin: 0 0 14px;
+            color: var(--muted);
+        }
+
+        .btn-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 6px;
+        }
+
+        /* fallback if you don't have a ghost button style */
+        .btn-ghost {
+            display: inline-block;
+            padding: .6rem 1rem;
+            border-radius: 999px;
+            font-weight: 900;
+            border: 1px solid var(--border);
+            background: var(--bg-elev);
+            color: var(--text);
+            text-decoration: none;
+            transition: border-color .2s ease, box-shadow .2s ease, transform .12s ease;
+        }
+
+        .btn-ghost:hover {
+            border-color: color-mix(in oklab, var(--accent), black 25%);
+            box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent), transparent 85%);
+            transform: translateY(-1px);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header (same as other pages) -->
+    <header>
+        <div class="container nav">
+            <a class="brand" href="index.html">
+                <span class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" aria-label="Logo">
+                        <path d="M12 2l3.5 6.8 7.5 1.1-5.5 5.2 1.3 7.4L12 18.6 5.2 22.5 6.5 15 1 9.9l7.5-1.1L12 2z" />
+                    </svg>
+                </span>
+                <span>JLXTrades</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html#features">Features</a>
+                <a href="index.html#deals">Deals</a>
+                <a href="compare.html">Compare</a>
+                <a href="contact.html">Contact</a>
+                <a href="index.html#faq">FAQ</a>
+            </nav>
+            <div class="nav-actions" style="display:flex; gap:10px; align-items:center;">
+                <button id="themeToggle" class="toggle" aria-label="Toggle theme" title="Toggle light/dark">
+                    <svg id="sunIcon" viewBox="0 0 24 24">
+                        <path
+                            d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm9.83-19.16l-1.79-1.79-1.8 1.79 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.79 1.41 1.41 1.79-1.79-1.4-1.41zM17.24 4.84l1.8-1.79-1.41-1.41-1.79 1.79 1.4 1.41zM12 6a6 6 0 100 12 6 6 0 000-12z" />
+                    </svg>
+                    <span id="toggleLabel">Light</span>
+                </button>
+                <a class="cta-btn" href="index.html#deals">Use Code: JLXTRADES</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main>
+        <section class="container thanks-hero">
+            <article class="card thanks-card" data-move style="max-width:740px; text-align:center; padding:22px;">
+                <div class="emoji">✅</div>
+                <h1 class="thanks-title">Thanks — message received!</h1>
+                <p class="thanks-sub">
+                    We’ll review your question and reply to your email within <strong>24–48 hours</strong> (business
+                    days).
+                </p>
+
+                <div class="btn-row">
+                    <a class="btn-primary" href="index.html">Back to Home</a>
+                    <a class="btn-ghost" href="contact.html">Ask Another Question</a>
+                    <a class="btn-ghost" href="compare.html">Compare Prop Firms</a>
+                </div>
+
+                <p class="thanks-sub" style="margin-top:14px;">
+                    Tip: check your spam folder if you don’t see our reply.
+                </p>
+            </article>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container"
+            style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="brand-logo" aria-hidden="true" style="width:28px;height:28px;border-radius:10px;">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#fff"
+                            d="M12 2l3.5 6.8 7.5 1.1-5.5 5.2 1.3 7.4L12 18.6 5.2 22.5 6.5 15 1 9.9l7.5-1.1L12 2z" />
+                    </svg>
+                </div>
+                <strong>JLXTrades</strong>
+            </div>
+            <div>© <span id="year"></span> JLXTrades. Perks for futures traders.</div>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+    <script>
+        // Year
+        document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
