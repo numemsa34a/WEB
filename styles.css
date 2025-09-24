@@ -623,3 +623,77 @@ html:not([data-theme="light"]) .promo-cta {
 .feature-card .icon {
   display: none;
 }
+
+
+/* FAQ */
+.faq-card {
+  padding: 18px;
+}
+
+.faq-heading {
+  font-size: 1.05rem;
+  font-weight: 900;
+  margin: 0 0 10px;
+  color: var(--text);
+}
+
+.faq .faq-item {
+  border-top: 1px solid var(--border);
+}
+
+.faq .faq-item:first-child {
+  border-top: none;
+}
+
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 12px 8px;
+  font-weight: 800;
+  color: var(--text);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq summary::after {
+  content: '▸';
+  transform: rotate(0deg);
+  transition: transform .15s ease;
+  color: var(--muted);
+}
+
+.faq details[open]>summary::after {
+  transform: rotate(90deg);
+  color: var(--accent);
+}
+
+.faq .faq-a {
+  padding: 6px 8px 14px 8px;
+  color: var(--muted);
+}
+
+.faq .faq-a ul {
+  margin: 8px 0 0 18px;
+}
+
+.faq .faq-a li {
+  margin: 4px 0;
+}
+
+/* summary hover/focus */
+.faq summary:hover {
+  color: var(--accent);
+}
+
+.faq summary:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--accent), white 18%);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
