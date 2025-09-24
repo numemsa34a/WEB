@@ -210,3 +210,40 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+document.addEventListener('DOMContentLoaded', () => {
+  const nav = document.querySelector('header .nav');
+  const navToggle = document.getElementById('navToggle');
+  const links = document.querySelectorAll('header .nav-links a');
+
+  if (nav && navToggle) {
+    navToggle.addEventListener('click', () => {
+      const open = nav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    links.forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+  }
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('copyCodeBtn');
+  if (!btn) return;
+
+  btn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    const original = btn.textContent;
+    try {
+      await navigator.clipboard.writeText('JLXTRADES');
+      btn.textContent = 'Copied!';
+      btn.classList.add('is-copied');
+      setTimeout(() => {
+        btn.textContent = original;
+        btn.classList.remove('is-copied');
+      }, 1400);
+    } catch {
+      // Fallback for older browsers: put code in URL hash to show somewhere if needed
+    }
+    // Navigate to deals (works from any page)
+    const target = new URL('index.html#deals', location.href);
+    location.href = target.href;
+  });
+});

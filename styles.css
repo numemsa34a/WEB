@@ -697,3 +697,75 @@ html:not([data-theme="light"]) .promo-cta {
   border-radius: 8px;
 }
 
+/* Mobile nav */
+.nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg-elev);
+  color: var(--text);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .nav-toggle {
+    display: inline-flex;
+  }
+
+  header .nav {
+    position: relative;
+    z-index: 1000;
+  }
+
+  header .nav-links {
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    display: none;
+    flex-direction: column;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--bg-elev);
+    border-bottom: 1px solid var(--border);
+    z-index: 1001;
+  }
+
+  header .nav.open .nav-links {
+    display: flex;
+  }
+
+  header .nav-links a {
+    padding: 10px 6px;
+    font-weight: 900;
+  }
+}
+.cta-btn.is-copied {
+  filter: brightness(1.08);
+}
+
+/* Theme toggle: keep text/icon visible in both themes */
+#themeToggle {
+  color: var(--text) !important;
+  /* light mode uses your token */
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+}
+
+/* Make the SVG icon follow the text color */
+#themeToggle svg,
+#themeToggle svg path {
+  fill: currentColor !important;
+}
+
+/* Dark-mode overrides: force bright label/icon */
+html[data-theme="dark"] #themeToggle,
+html:not([data-theme="light"]) #themeToggle,
+.dark #themeToggle {
+  color: #fff !important;
+}

@@ -26,13 +26,22 @@
 
 
       <div class="nav-actions" style="display:flex; gap:10px; align-items:center;">
+        <!-- Mobile menu -->
+        <button id="navToggle" class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+
+        <!-- Theme toggle (unchanged) -->
         <button id="themeToggle" class="toggle" aria-label="Toggle theme" title="Toggle light/dark">
-          <svg id="sunIcon" viewBox="0 0 24 24"><path d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm9.83-19.16l-1.79-1.79-1.8 1.79 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.79 1.41 1.41 1.79-1.79-1.4-1.41zM17.24 4.84l1.8-1.79-1.41-1.41-1.79 1.79 1.4 1.41zM12 6a6 6 0 100 12 6 6 0 000-12z"/></svg>
+          <svg id="sunIcon" viewBox="0 0 24 24">
+            <path
+              d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm9.83-19.16l-1.79-1.79-1.8 1.79 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.79 1.41 1.41 1.79-1.79-1.4-1.41zM17.24 4.84l1.8-1.79-1.41-1.41-1.79 1.79 1.4 1.41zM12 6a6 6 0 100 12 6 6 0 000-12z" />
+          </svg>
           <span id="toggleLabel">Light</span>
         </button>
-        <a class="cta-btn" href="#deals">Use Code: JLXTRADES</a>
+
+        <!-- CTA with id for copy -->
+        <a class="cta-btn" id="copyCodeBtn" href="index.html#deals">Use Code: JLXTRADES</a>
       </div>
-    </div>
+
   </header>
 
   <main>
