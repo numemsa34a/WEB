@@ -1,0 +1,53 @@
+/* ==== 3D Cube Background Layer ====================================== */
+#cube-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    /* behind your content */
+    pointer-events: none;
+    contain: strict;
+}
+
+/* keep your main content above the canvas */
+header,
+main,
+footer {
+    position: relative;
+    z-index: 1;
+}
+
+/* soft vignette & glow over the 3D background */
+#cube-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        radial-gradient(1200px 60% at 70% 10%,
+            color-mix(in oklab, var(--accent, #7cf) 18%, transparent) 0%,
+            transparent 60%),
+        radial-gradient(1200px 60% at 10% 80%,
+            color-mix(in oklab, var(--cta, #f68) 12%, transparent) 0%,
+            transparent 60%),
+        radial-gradient(100% 120% at 50% 110%, rgba(0, 0, 0, .6), transparent 60%);
+    mix-blend-mode: screen;
+    opacity: .35;
+}
+
+/* respect reduced motion: hide heavy motion */
+@media (prefers-reduced-motion: reduce) {
+    #cube-bg {
+        display: none;
+    }
+}
+/* Make the WebGL layer readable on light theme */
+/* Make the WebGL layer readable on light theme */
+/* Light theme: make the overlay darken instead of brighten */
+html[data-theme="light"] #cube-bg::after {
+    mix-blend-mode: multiply;
+    opacity: .7;
+    background:
+        radial-gradient(1200px 60% at 70% 10%, rgba(0, 0, 0, .10), transparent 60%),
+        radial-gradient(1200px 60% at 10% 80%, rgba(0, 0, 0, .08), transparent 60%),
+        radial-gradient(100% 120% at 50% 110%, rgba(0, 0, 0, .35), transparent 60%);
+}

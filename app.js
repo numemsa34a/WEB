@@ -247,3 +247,5 @@ document.addEventListener('DOMContentLoaded', () => {
     location.href = target.href;
   });
 });
+
+
