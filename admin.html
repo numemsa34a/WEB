@@ -88,12 +88,12 @@
             const email = document.getElementById('adminEmail').value.trim();
             const pass = document.getElementById('adminPass').value.trim();
             const { error } = await sb.auth.signInWithPassword({ email, password: pass });
-            if (error) return alert('Admin login error: ' + error.message);
+            //if (error) return alert('Admin login error: ' + error.message);
 
             const { data: { user } } = await sb.auth.getUser();
-            if (!user) return alert('Not signed in.');
+            //if (!user) return alert('Not signed in.');
             if (user.email !== ADMIN_EMAIL) {
-                alert('This email is not the admin email allowed by RLS.');
+                //alert('Admin login error');
                 await sb.auth.signOut();
                 return;
             }
