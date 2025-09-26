@@ -30,15 +30,15 @@
     <main>
         <section class="container" style="padding-top:24px;">
             <div class="card" style="max-width:720px;">
-                <h3>Admin — Stones Adjuster</h3>
-                <p class="muted">Log in as admin to credit/deduct Stones. (Email must match RLS:)</p>
+                <h3>Admin Portal — Gemstone Manager</h3>
+                <p class="muted">Log in as admin to credit/deduct Stones. </p>
 
                 <!-- Admin login -->
                 <form id="adminLogin" class="contact-form">
                     <div class="form-grid">
                         <div class="form-field form-span-2">
                             <label for="adminEmail">Admin Email</label>
-                            <input id="adminEmail" type="email" placeholder="johanliebertgermanywale@gmail.com"
+                            <input id="adminEmail" type="email" placeholder="marin@gmail.com"
                                 required />
                         </div>
                         <div class="form-field form-span-2">
@@ -53,7 +53,7 @@
 
                 <!-- Panel -->
                 <div id="panel" style="display:none; margin-top:12px;">
-                    <p class="muted">Signed in as <strong id="who"></strong>. Only this email can write due to RLS.</p>
+                    <p class="muted">Signed in as <strong id="who"></strong></p>
                     <form id="adjust" class="form-grid" style="margin-top:8px;">
                         <input type="email" id="targetEmail" placeholder="User email (target)" required />
                         <input type="number" id="delta" placeholder="+20 or -15" required />
