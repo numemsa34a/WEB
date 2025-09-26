@@ -1,11 +1,10 @@
-// cubefx.js — Solid cube that shatters into star-like fragments on scroll
+// cubefx.js — Solid cube that shatters into star-like fragments on scroll (theme-aware shards + 1s pulse)
 (() => {
     const host = document.getElementById('cube-bg');
-    if (!host) return;
+    if (!host || typeof THREE === 'undefined') return;
 
     // Respect reduced motion
-    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduceMotion) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     // --- THREE setup ------------------------------------------------------
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -33,7 +32,7 @@
     scene.add(key);
 
     // --- 1) The intact hero cube -----------------------------------------
-    const HERO_SIZE = 1;
+    const HERO_SIZE = 1.5;
     const heroMat = new THREE.MeshPhongMaterial({
         color: ACCENT2.clone().lerp(CTA, 0.18),
         shininess: 28,
@@ -50,27 +49,34 @@
     );
     scene.add(edges);
 
-    // --- 2) The shatter fragments (instanced voxels) ----------------------
-    // We prebuild tiny cubes in a grid inside the hero cube. On shatter, they fly out.
-    const N = 2;                          // cubes per axis (12^3 = 1728; tune if heavy)
+    // --- 2) Shatter fragments → star-like voxels --------------------------
+    const N = 12;                          // cubes per axis (12^3 = 1728)
     const COUNT = N * N * N;
-    const VOX = HERO_SIZE / N * 0.9;       // voxel size with a gap
+    const VOX = (HERO_SIZE / N) * 0.35;    // small "star" points
     const voxGeo = new THREE.BoxGeometry(VOX, VOX, VOX);
-    const voxMat = new THREE.MeshBasicMaterial({ color: CTA, transparent: true, opacity: 0.0 });
+
+    // Additive for glow, depthWrite off so overlaps glow nicely
+    const voxMat = new THREE.MeshBasicMaterial({
+        color: 0xffffff,                      // DARK MODE default (white stars)
+        transparent: true,
+        opacity: 0.0,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false
+    });
+
     const voxels = new THREE.InstancedMesh(voxGeo, voxMat, COUNT);
     voxels.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     voxels.frustumCulled = false;
-    scene.add(voxels);
     voxels.visible = false;
+    scene.add(voxels);
 
     // Per-fragment state
-    const origin = new THREE.Vector3();
-    const offsets = new Float32Array(COUNT * 3);  // initial local positions (packed)
+    const offsets = new Float32Array(COUNT * 3);
     const velocities = new Float32Array(COUNT * 3);
-    const spins = new Float32Array(COUNT * 3);    // per-fragment rotation speeds
-    const colors = new THREE.InstancedBufferAttribute(new Float32Array(COUNT * 3), 3);
+    const spins = new Float32Array(COUNT * 3);
+    const colors = new THREE.InstancedBufferAttribute(new Float32Array(COUNT * 3), 3); // harmless (not used by mat)
 
-    // Fill voxel positions centered on origin + give outward velocities
+    // Fill voxel positions centered on origin + gentle initial velocity
     let i = 0;
     const half = (N - 1) / 2;
     for (let x = 0; x < N; x++) {
@@ -85,27 +91,20 @@
                 offsets[i * 3 + 2] = pz;
 
                 const dir = new THREE.Vector3(px, py, pz).normalize();
-                const rand = new THREE.Vector3(
-                    (Math.random() - 0.5) * 0.8,
-                    (Math.random() - 0.5) * 0.8,
-                    (Math.random() - 0.5) * 0.8
-                );
-                const speed = 1.0 + Math.random() * 6.0;        // initial burst speed
+                const rand = new THREE.Vector3((Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.8, (Math.random() - 0.5) * 0.8);
+                const speed = 1.0 + Math.random() * 2.0;        // slower blast
                 const v = dir.multiplyScalar(speed).add(rand);
 
                 velocities[i * 3 + 0] = v.x;
                 velocities[i * 3 + 1] = v.y;
                 velocities[i * 3 + 2] = v.z;
 
-                spins[i * 3 + 0] = (Math.random() - 0.5) * 3.0;       // spin around x/y/z
+                spins[i * 3 + 0] = (Math.random() - 0.5) * 3.0;
                 spins[i * 3 + 1] = (Math.random() - 0.5) * 3.0;
                 spins[i * 3 + 2] = (Math.random() - 0.5) * 3.0;
 
-                // warm yellow/white-ish sparkle colors
                 const c = new THREE.Color().lerpColors(CTA, new THREE.Color(0xffffff), Math.random() * 0.35);
-                colors.array[i * 3 + 0] = c.r;
-                colors.array[i * 3 + 1] = c.g;
-                colors.array[i * 3 + 2] = c.b;
+                colors.array[i * 3 + 0] = c.r; colors.array[i * 3 + 1] = c.g; colors.array[i * 3 + 2] = c.b;
 
                 i++;
             }
@@ -114,7 +113,7 @@
     voxels.geometry.setAttribute('instColor', colors);
 
     // --- 3) Starfield (background, drifts after explosion) ----------------
-    const STARS = 200;
+    const STARS = 1200;
     const starGeo = new THREE.BufferGeometry();
     const starPos = new Float32Array(STARS * 3);
     for (let s = 0; s < STARS; s++) {
@@ -125,32 +124,30 @@
     starGeo.setAttribute('position', new THREE.BufferAttribute(starPos, 3));
     const starMat = new THREE.PointsMaterial({ color: 0xffffff, size: 0.6, transparent: true, opacity: 0.35, depthWrite: false });
     const stars = new THREE.Points(starGeo, starMat);
-    stars.visible = false;             // reveal after boom
+    stars.visible = false;
     scene.add(stars);
-    // ---- light/dark theme adaptation (safe to add here) --------------------
-    const isLight = () =>
-        document.documentElement.getAttribute('data-theme') === 'light';
 
-    // edge opacity baseline; we’ll use this in the loop
+    // ---- light/dark theme adaptation -------------------------------------
+    const isLight = () => document.documentElement.getAttribute('data-theme') === 'light';
+
     let baseEdgeOpacity = 0.55;
-
     function applyTheme() {
         const light = isLight();
 
-        // solid cube & edges
+        // intact cube & edges
         heroMat.color.set(light ? '#8a8f98' : ACCENT2.clone().lerp(CTA, 0.18));
         edges.material.color.set(light ? '#1a1a1a' : ACCENT);
-        baseEdgeOpacity = light ? 0.80 : 0.55;     // darker edge on light theme
+        baseEdgeOpacity = light ? 0.80 : 0.55;
 
-        // starfield (dark dots on light theme)
+        // **shattered fragments color**: black in light mode, white in dark
+        voxMat.color.set(light ? '#111111' : '#ffffff');
+
+        // starfield color: charcoal on light, white on dark
         starMat.color.set(light ? '#1a1a1a' : 0xffffff);
-        starMat.opacity = light ? 0.28 : 0.35;
 
-        // camera a touch farther to keep lines crisp on white
+        // camera tweak
         camera.position.z = light ? 12.5 : 12;
     }
-
-    // run once and update when data-theme changes
     applyTheme();
     new MutationObserver(applyTheme).observe(document.documentElement, {
         attributes: true,
@@ -175,24 +172,28 @@
         voxels.visible = true;
         stars.visible = true;
         boomTime = performance.now();
+        // ensure correct shard color if user toggled theme before shatter
+        applyTheme();
     }
 
     // --- 5) Update loop ---------------------------------------------------
     const m = new THREE.Matrix4();
     const euler = new THREE.Euler();
     const tmp = new THREE.Vector3();
-
-    // simple easing
     const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
 
     let tPrev = performance.now();
     let raf = 0;
+
     function animate(tNow) {
         const dt = Math.min(50, tNow - tPrev) / 1000;
         tPrev = tNow;
 
-        // idle: rotate cube gently
+        // 1-second global pulse (0..1)
+        const pulse = 0.5 + 0.5 * Math.sin(tNow * (2 * Math.PI / 1000));
+
         if (!shattered) {
+            // idle: rotate cube gently
             hero.rotation.x += 0.20 * dt;
             hero.rotation.y += 0.12 * dt;
             edges.rotation.copy(hero.rotation);
@@ -200,27 +201,27 @@
             // fade out hero quickly
             heroOpacity = Math.max(0, heroOpacity - dt * 2.2);
             heroMat.opacity = heroOpacity;
-            edges.material.opacity = heroOpacity * 0.55;
+            edges.material.opacity = heroOpacity * baseEdgeOpacity;
 
-            // simulate fragments: outward + slight gravity + drag
+            // simulate fragments: gentle drift (so they stay on screen)
             const since = (tNow - boomTime) / 1000;
-            const accel = 2.2;            // pushes them outward a bit more
-            const drag = 0.985;
-
+            const accel = 0.1;   // tiny outward push
+            const drag = 1.0;   // coast
             let idx = 0;
-            for (let n = 0; n < COUNT; n++) {
-                // position = origin + offsets + velocities * time
-                const vx = velocities[idx + 0] *= drag;
-                const vy = (velocities[idx + 1] -= dt * 0.6) * drag; // gravity
-                const vz = velocities[idx + 2] *= drag;
 
-                // add a tiny acceleration away from center
+            for (let n = 0; n < COUNT; n++) {
+                // velocity update
+                const vx = (velocities[idx + 0] *= drag);
+                const vy = (velocities[idx + 1] = (velocities[idx + 1] - dt * 0.1) * drag); // light gravity
+                const vz = (velocities[idx + 2] *= drag);
+
+                // tiny acceleration away from center
                 tmp.set(offsets[idx + 0], offsets[idx + 1], offsets[idx + 2]).normalize().multiplyScalar(accel * dt);
                 velocities[idx + 0] += tmp.x;
                 velocities[idx + 1] += tmp.y;
                 velocities[idx + 2] += tmp.z;
 
-                // cumulatively displace from initial offset
+                // integrate
                 const x = offsets[idx + 0] + vx * since;
                 const y = offsets[idx + 1] + vy * since;
                 const z = offsets[idx + 2] + vz * since;
@@ -236,14 +237,17 @@
             }
             voxels.instanceMatrix.needsUpdate = true;
 
-            // brighten stars, move them slowly “towards” the camera
+            // PULSE: make all fragments glow together once per second
+            voxMat.opacity = 0.25 + 0.75 * pulse; // range 0.25–1.0
+
+            // starfield: brighten and drift, also breathe with pulse
             const starOp = easeOutCubic(Math.min(1, since / 1.2)) * 0.55;
-            starMat.opacity = 0.15 + starOp;
+            starMat.opacity = (0.15 + starOp) * (0.65 + 0.35 * pulse);
             stars.rotation.y -= dt * 0.03;
-            stars.position.z += dt * 2.0;
+            stars.position.z += dt * 0.3; // slower flight so the universe lingers
         }
 
-        // subtle background grid-like feel by rotating whole scene very slightly
+        // subtle background roll for depth
         scene.rotation.z = Math.sin(tNow * 0.0001) * 0.04;
 
         renderer.render(scene, camera);
