@@ -171,77 +171,7 @@
 
 
         <!-- Unlock Perks After Purchase -->
-        <div class="card" data-move>
-          <h2 class="section-title" style="font-size:1.1rem;">Unlock Perks After Purchase</h2>
-          <form id="form-verify" class="contact-form" method="POST" action="#" enctype="multipart/form-data">
-            <!-- Replace action with your endpoint later -->
-            <div class="form-grid">
-              <div class="form-field">
-                <label for="vName">Full Name</label>
-                <input id="vName" name="name" type="text" placeholder="Jane Doe" required>
-              </div>
-              <div class="form-field">
-                <label for="vEmail">Email (used for purchase)</label>
-                <input id="vEmail" name="email" type="email" placeholder="you@example.com" required>
-              </div>
-              <div class="form-field">
-                <label for="vFirm">Prop Firm</label>
-                <select id="vFirm" name="firm" required>
-                  <option value="" disabled selected>Select firm</option>
-                  <option>My Funded Futures</option>
-                  <option>Top One Futures</option>
-                  <option>Topstep</option>
-                  <option>Apex</option>
-                  <option>Take Profit Trader</option>
-                  <option>Bulenox</option>
-                  <option>Others</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label for="vAccount">Account Size</label>
-                <input id="vAccount" name="accountSize" type="text" placeholder="e.g., 50K / 100K" required>
-              </div>
-              <div class="form-field">
-                <label for="vOrder">Order/Account ID (UID)</label>
-                <input id="vOrder" name="orderId" type="text" placeholder="UID / Order # from the prop firm" required>
-              </div>
-              <div class="form-field">
-                <label for="vDate">Purchase Date</label>
-                <input id="vDate" name="purchaseDate" type="date" required>
-              </div>
-              <div class="form-field form-span-2">
-                <label for="vLink">Proof Link (optional)</label>
-                <input id="vLink" name="proofUrl" type="url" placeholder="https://dashboard.your-firm.com/…">
-              </div>
-              <!-- Receipt upload -->
-              <div class="form-field form-span-2">
-                <label>Upload Receipt (PDF or image)</label>
-                <label class="file-drop" for="vReceipt">
-                  <input id="vReceipt" name="receipt" type="file" accept=".pdf,image/*" required>
-                  <div class="file-drop-ui">
-                    <div class="file-drop-icon">📎</div>
-                    <div>
-                      <strong>Click to upload</strong> or drag &amp; drop
-                      <div class="muted">Max 10MB • PDF / PNG / JPG</div>
-                    </div>
-                  </div>
-                </label>
-                <div id="vReceiptPreview" class="file-preview" aria-live="polite"></div>
-              </div>
-              <div class="form-field form-span-2">
-                <label class="checkline">
-                  <input type="checkbox" id="vConfirm" name="confirm" required>
-                  <span>I confirm I used the code <strong>JLXTRADES</strong> at checkout.</span>
-                </label>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button type="submit" class="btn-primary">Submit &amp; Unlock Perks</button>
-              <p class="help-text">Verification usually takes 12–24 hrs (business days).</p>
-            </div>
-            <p class="form-note" id="vNote" hidden>✅ Thanks! We’ve received your submission.</p>
-          </form>
-        </div>
+
 
       </div>
     </section>
