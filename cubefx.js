@@ -33,7 +33,7 @@
     scene.add(key);
 
     // --- 1) The intact hero cube -----------------------------------------
-    const HERO_SIZE = 1;
+    const HERO_SIZE = 0.1;
     const heroMat = new THREE.MeshPhongMaterial({
         color: ACCENT2.clone().lerp(CTA, 0.18),
         shininess: 28,
@@ -114,7 +114,7 @@
     voxels.geometry.setAttribute('instColor', colors);
 
     // --- 3) Starfield (background, drifts after explosion) ----------------
-    const STARS = 200;
+    const STARS = 100;
     const starGeo = new THREE.BufferGeometry();
     const starPos = new Float32Array(STARS * 3);
     for (let s = 0; s < STARS; s++) {
