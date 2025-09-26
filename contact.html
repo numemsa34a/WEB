@@ -78,6 +78,7 @@
     .form-note{ margin-top:8px; color: color-mix(in oklab, var(--accent), black 20%); font-weight:900; }
   </style>
 </head>
+
 <body>
   <!-- Header (same look as your site) --><div id="cube-bg" aria-hidden="true"></div>
   <header>
@@ -94,6 +95,7 @@
         <a href="compare.html">Compare</a>
         <a href="contact.html" aria-current="page">Contact</a>
         <a href="index.html#faq">FAQ</a>
+
       </nav>
       <div class="nav-actions" style="display:flex; gap:10px; align-items:center;">
         <button id="themeToggle" class="toggle" aria-label="Toggle theme" title="Toggle light/dark">
@@ -101,6 +103,12 @@
           <span id="toggleLabel">Light</span>
         </button>
         <a class="cta-btn" href="index.html#deals">Use Code: JLXTRADES</a>
+<a href="stones.html" class="diamond-btn" title="Stones" aria-label="Stones">
+  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+    <path d="M12 2l4 4h5l-9 16L3 6h5l4-4zM7 6l5 12L17 6h-4l-1-1-1 1H7z" />
+  </svg>
+</a>
+
       </div>
     </div>
   </header>
@@ -314,5 +322,63 @@
   </script>
     <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
     <script src="cubefx.js"></script>
+    <!-- Include only if this page doesn't already include supabase-js -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+      (function () {
+        // ===== CONFIG — YOUR Supabase project =====
+        const SUPABASE_URL = 'https://mbhgjdxiprlxbrzifnwz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iaGdqZHhpcHJseGJyemlmbnd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzA5NDEsImV4cCI6MjA3NDQ0Njk0MX0.dgqHTewgFTYG8XHgmc8gk4IhdrYrf4Z8PVWeVlOA6gg';
+
+        // Require SDK
+        if (!window.supabase) { console.error('Supabase SDK not loaded. Add the CDN <script> above this block.'); return; }
+
+        // Reuse a single client per page load
+        const sb = window.__sbClient || (window.__sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
+
+        const badge = document.getElementById('navStoneBadge');
+        if (!badge) return; // no diamond on this page
+
+        async function refreshBadge() {
+          try {
+            const { data: { user }, error: uErr } = await sb.auth.getUser();
+            if (uErr) { console.warn('[StonesBadge] getUser:', uErr.message); badge.hidden = true; return; }
+            if (!user) { badge.hidden = true; return; }
+
+            const { data, error } = await sb
+              .from('users')
+              .select('stones')
+              .eq('email', user.email)
+              .single();
+
+            if (error && error.code !== 'PGRST116') {
+              console.warn('[StonesBadge] select users:', error.message);
+              badge.hidden = true; return;
+            }
+
+            const stones = data?.stones ?? 0;
+            badge.textContent = stones;
+            badge.hidden = stones <= 0;
+          } catch (e) {
+            console.warn('[StonesBadge] error:', e);
+            badge.hidden = true;
+          }
+        }
+
+        // Initial paint
+        refreshBadge();
+
+        // Update when auth state changes (login/logout)
+        sb.auth.onAuthStateChange(() => refreshBadge());
+
+        // Refresh when the tab regains focus
+        window.addEventListener('focus', refreshBadge);
+
+        // (Optional) periodic refresh every few minutes
+        // setInterval(refreshBadge, 180000);
+      })();
+    </script>
+
 </body>
 </html>

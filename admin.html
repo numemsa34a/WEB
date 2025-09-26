@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Stones Admin — JLXTrades</title>
+    <link rel="stylesheet" href="styles.css" />
+    <style>
+        .muted {
+            color: var(--muted);
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="container nav">
+            <a class="brand" href="index.html"><span>JLXTrades</span></a>
+            <nav class="nav-links">
+                <a href="index.html#features">Features</a>
+                <a href="compare.html">Compare</a>
+                <a href="contact.html">Contact</a>
+                <a href="stones.html">Stones</a>
+                <a href="admin.html" aria-current="page">Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="container" style="padding-top:24px;">
+            <div class="card" style="max-width:720px;">
+                <h3>Admin — Stones Adjuster</h3>
+                <p class="muted">Log in as admin to credit/deduct Stones. (Email must match RLS:
+                    <strong>johanliebertgermanywale@gmail.com</strong>)</p>
+
+                <!-- Admin login -->
+                <form id="adminLogin" class="contact-form">
+                    <div class="form-grid">
+                        <div class="form-field form-span-2">
+                            <label for="adminEmail">Admin Email</label>
+                            <input id="adminEmail" type="email" placeholder="johanliebertgermanywale@gmail.com"
+                                required />
+                        </div>
+                        <div class="form-field form-span-2">
+                            <label for="adminPass">Password</label>
+                            <input id="adminPass" type="password" placeholder="••••••••" required />
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" type="submit">Log in</button>
+                    </div>
+                </form>
+
+                <!-- Panel -->
+                <div id="panel" style="display:none; margin-top:12px;">
+                    <p class="muted">Signed in as <strong id="who"></strong>. Only this email can write due to RLS.</p>
+                    <form id="adjust" class="form-grid" style="margin-top:8px;">
+                        <input type="email" id="targetEmail" placeholder="User email (target)" required />
+                        <input type="number" id="delta" placeholder="+20 or -15" required />
+                        <input type="text" id="reason" placeholder="Reason (e.g., Verified 20% off)" required />
+                        <button class="btn-primary form-span-2">Apply</button>
+                    </form>
+                    <p id="msg" class="form-note" hidden>✅ Updated.</p>
+
+                    <div style="margin-top:10px;">
+                        <button id="adminLogout" class="btn-ghost">Sign out</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://mbhgjdxiprlxbrzifnwz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iaGdqZHhpcHJseGJyemlmbnd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzA5NDEsImV4cCI6MjA3NDQ0Njk0MX0.dgqHTewgFTYG8XHgmc8gk4IhdrYrf4Z8PVWeVlOA6gg';
+        const ADMIN_EMAIL = 'johanliebertgermanywale@gmail.com';
+        const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        function showPanel(email) {
+            document.getElementById('who').textContent = email || '';
+            document.getElementById('panel').style.display = email ? '' : 'none';
+        }
+
+        // Admin login (password)
+        document.getElementById('adminLogin').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('adminEmail').value.trim();
+            const pass = document.getElementById('adminPass').value.trim();
+            const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+            if (error) return alert('Admin login error: ' + error.message);
+
+            const { data: { user } } = await sb.auth.getUser();
+            if (!user) return alert('Not signed in.');
+            if (user.email !== ADMIN_EMAIL) {
+                alert('This email is not the admin email allowed by RLS.');
+                await sb.auth.signOut();
+                return;
+            }
+            showPanel(user.email);
+        });
+
+        // Persisted session (if already logged in)
+        (async () => {
+            const { data: { user } } = await sb.auth.getUser();
+            if (user && user.email === ADMIN_EMAIL) showPanel(user.email);
+        })();
+
+        document.getElementById('adminLogout').addEventListener('click', async () => {
+            await sb.auth.signOut(); showPanel('');
+        });
+
+        // Adjust Stones (RLS allows only ADMIN_EMAIL to write)
+        document.getElementById('adjust').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('targetEmail').value.trim().toLowerCase();
+            const delta = parseInt(document.getElementById('delta').value, 10);
+            const reason = document.getElementById('reason').value.trim();
+            const msg = document.getElementById('msg');
+
+            if (!delta || !reason) return alert('Enter delta and reason');
+
+            // Ensure user row exists
+            const ins = await sb.from('users').insert({ email });
+            if (ins.error && !/duplicate key/i.test(ins.error.message)) {
+                return alert('Could not ensure user row: ' + ins.error.message);
+            }
+
+            // Read current balance
+            const cur = await sb.from('users').select('stones').eq('email', email).single();
+            if (cur.error && cur.error.code !== 'PGRST116') return alert('Read error: ' + cur.error.message);
+            const before = cur.data?.stones ?? 0;
+            const after = before + delta;
+            if (after < 0) return alert('Insufficient Stones');
+
+            // Update + log
+            const up = await sb.from('users').update({ stones: after }).eq('email', email);
+            if (up.error) return alert('Update failed: ' + up.error.message);
+
+            const tx = await sb.from('transactions').insert({ email, delta, reason });
+            if (tx.error) console.warn('Tx insert (non-blocking):', tx.error.message);
+
+            msg.hidden = false; e.target.reset();
+        });
+    </script>
+</body>
+
+</html>

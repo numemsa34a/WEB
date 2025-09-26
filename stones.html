@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Stones — JLXTrades</title>
+    <meta name="description" content="Check your Stones balance, see history, and claim rewards." />
+    <!-- Reuse your site styles -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="cubefx.css" />
+    <style>
+        /* Page-specific layout only (everything else comes from styles.css) */
+
+        /* Base wrapper: 1 column by default */
+        .wrap {
+            display: grid;
+            gap: 16px;
+            padding-top: 20px;
+            grid-template-columns: 1fr;
+        }
+
+        /* Center and tidy the auth card */
+        #authSection {
+            display: grid;
+            place-items: center;
+            min-height: calc(100svh - 220px);
+        }
+
+        .auth-card {
+            max-width: 520px;
+            margin-inline: auto;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .auth-tabs button {
+            border: 1px solid var(--border);
+            background: var(--bg-elev);
+            padding: .45rem .8rem;
+            border-radius: 999px;
+            font-weight: 900;
+            box-shadow: 0 2px 8px var(--shadow);
+        }
+
+        .auth-tabs button[aria-selected="true"] {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px color-mix(in oklab, var(--accent), transparent 85%);
+        }
+
+        /* Make the auth primary button normal width + nicer spacing */
+        .auth-card .form-actions .btn-primary {
+            width: auto;
+            padding: .65rem 1.2rem;
+        }
+
+        .auth-card .contact-form .form-grid {
+            row-gap: 12px;
+        }
+
+        .auth-card p.muted {
+            margin-top: 10px;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        /* Dashboard row 1: Stones + Activity side-by-side on wide screens */
+        .dash-row {
+            display: grid;
+            gap: 16px;
+            grid-template-columns: 1fr;
+            /* stack mobile */
+        }
+
+        @media (min-width:1100px) {
+            .dash-row {
+                grid-template-columns: .85fr 1.15fr;
+            }
+
+            /* Stones smaller, Activity wider */
+        }
+
+        /* Stones KPI card slightly tighter */
+        .kpi-card {
+            padding: 16px 18px !important;
+        }
+
+        .kpi {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .kpi .big {
+            font-size: 32px;
+            font-weight: 1000;
+            letter-spacing: .3px;
+        }
+
+        .sub {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        /* Tables: allow gentle horizontal scroll instead of clipping */
+        .table-wrap {
+            overflow: auto;
+            -webkit-overflow-scrolling: touch;
+            border-radius: 12px;
+        }
+
+        .table-wrap table {
+            min-width: 560px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+            text-align: left;
+        }
+
+        th {
+            font-weight: 900;
+            font-size: 12px;
+            letter-spacing: .3px;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        /* Claim form polish */
+        .claim-card h3 {
+            margin-bottom: 6px;
+        }
+
+        .claim-card .sub {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .claim-card .form-grid {
+            display: grid;
+            gap: 14px;
+            grid-template-columns: 1fr;
+        }
+
+        @media (min-width:900px) {
+            .claim-card .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .claim-card .form-actions {
+            margin-top: 16px;
+        }
+
+        .claim-card .help-text {
+            margin-top: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Same cube background -->
+    <div id="cube-bg" aria-hidden="true"></div>
+
+    <!-- HEADER: copied from your index.html (unchanged) -->
+    <header>
+        <div class="container nav">
+            <a class="brand" href="#">
+                <span class="brand-logo" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" role="img" aria-label="Logo">
+                        <path d="M12 2l3.5 6.8 7.5 1.1-5.5 5.2 1.3 7.4L12 18.6 5.2 22.5 6.5 15 1 9.9l7.5-1.1L12 2z" />
+                    </svg>
+                </span>
+                <span>JLXTrades</span>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html#features">Features</a>
+                <a href="index.html#deals">Deals</a>
+                <a href="compare.html">Compare</a>
+                <a href="contact.html">Contact</a>
+                <a href="index.html#faq">FAQ</a>
+            </nav>
+
+            <div class="nav-actions" style="display:flex; gap:10px; align-items:center;">
+                <button id="navToggle" class="nav-toggle" aria-label="Open menu" aria-expanded="false">☰</button>
+
+                <!-- Your theme toggle (handled by app.js) -->
+                <button id="themeToggle" class="toggle" aria-label="Toggle theme" title="Toggle light/dark">
+                    <svg id="sunIcon" viewBox="0 0 24 24">
+                        <path
+                            d="M6.76 4.84l-1.8-1.79L3.17 4.84l1.79 1.79 1.8-1.79zM1 13h3v-2H1v2zm10 10h2v-3h-2v3zm9.83-19.16l-1.79-1.79-1.8 1.79 1.8 1.79 1.79-1.79zM20 11v2h3v-2h-3zM6.76 19.16l-1.8 1.79 1.41 1.41 1.79-1.79-1.4-1.41zM17.24 4.84l1.8-1.79-1.41-1.41-1.79 1.79 1.4 1.41zM12 6a6 6 0 100 12 6 6 0 000-12z" />
+                    </svg>
+                    <span id="toggleLabel">Light</span>
+                </button>
+
+                <!-- Same CTA -->
+                <a class="cta-btn" id="copyCodeBtn" href="#">Use Code: JLXTRADES</a>
+
+                <!-- Same diamond button -->
+                <a href="stones.html" class="diamond-btn" title="Stones" aria-label="Stones">
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path d="M12 2l4 4h5l-9 16L3 6h5l4-4zM7 6l5 12L17 6h-4l-1-1-1 1H7z" />
+                    </svg>
+                    <!-- Optional badge (keep if you’re using the badge script) -->
+                    <span class="nav-diamond-badge" id="navStoneBadge" hidden>0</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN: auth + dashboard UI -->
+    <main class="container">
+        <!-- Not signed in -->
+        <section id="authSection" class="wrap">
+            <article class="card auth-card" data-move>
+                <h3>JLXTRADES Gemstones Dashboard</h3>
+                <p class="muted">Create an account or log in to view your balance and claim rewards.</p>
+
+                <div class="auth-tabs">
+                    <button id="tabLogin" aria-selected="true">Log in</button>
+                    <button id="tabSignup" aria-selected="false">Sign up</button>
+                </div>
+
+                <!-- Login -->
+                <form id="formLogin" class="contact-form">
+                    <div class="form-grid">
+                        <div class="form-field form-span-2">
+                            <label for="loginEmail">Email</label>
+                            <input id="loginEmail" type="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-field form-span-2">
+                            <label for="loginPass">Password</label>
+                            <input id="loginPass" type="password" placeholder="••••••••" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" type="submit">Log in</button>
+                    </div>
+                    <p class="muted" style="margin-top:10px;">We’ll keep you signed in on this device.</p>
+                </form>
+
+                <!-- Signup -->
+                <form id="formSignup" class="contact-form" style="display:none">
+                    <div class="form-grid">
+                        <div class="form-field form-span-2">
+                            <label for="signEmail">Email</label>
+                            <input id="signEmail" type="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-field form-span-2">
+                            <label for="signPass">Password</label>
+                            <input id="signPass" type="password" placeholder="Create a strong password" required>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button class="btn-primary" type="submit">Create account</button>
+                    </div>
+                    <p class="muted" style="margin-top:10px;">If email confirmation is enabled, check your inbox once.
+                    </p>
+                </form>
+            </article>
+        </section>
+
+        <!-- Signed in -->
+        <section id="dashSection" class="wrap" style="display:none;">
+            <!-- Row: Stones (narrow) + Activity (wide) -->
+            <div class="dash-row">
+                <article class="card kpi-card" data-move>
+                    <div class="kpi">
+                        <div>
+                            <h3>Gemstone Balance</h3>
+                            <div class="big"><span id="bal">0</span> <span style="font-size:16px;opacity:.8;">💎</span>
+                            </div>
+                            <div class="sub">Last updated <span id="balTime">—</span></div>
+                        </div>
+                        <div style="display:grid; gap:8px; justify-items:end;">
+                            <button id="refresh" class="btn-ghost">Refresh</button>
+                            <button id="logout" class="btn-ghost">Sign out</button>
+                        </div>
+                    </div>
+                </article>
+
+                <article class="card" data-move>
+                    <h3>Gemstone Credit & Debit History</h3>
+                    <div class="table-wrap">
+                        <table id="txTable">
+                            <thead>
+                                <tr>
+                                    <th>Date of Credit & Debit </th>
+                                    <th>Credit & Debit Amount</th>
+                                    <th>Product Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" class="sub">No activity yet.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Keep Claim a Reward at bottom with better spacing -->
+            <article class="card claim-card" data-move>
+                <h3>Claim a Reward</h3>
+                <p class="sub">Submit your claim & optional receipt. We’ll verify and credit your Stones.</p>
+
+                <form id="claimForm" class="contact-form" enctype="multipart/form-data" method="POST"
+                    action="https://formsubmit.co/johanliebertgermanywale@gmail.com">
+                    <input type="hidden" name="_subject" value="JLXTrades — Stones Claim">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_captcha" value="false">
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label for="cEmail">Your Email</label>
+                            <input id="cEmail" name="email" type="email" placeholder="you@example.com" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="cFirm">Prop Firm / Product</label>
+                            <input id="cFirm" name="firm" type="text" placeholder="TopStep 50K…" required>
+                        </div>
+                        <div class="form-field">
+                            <label for="cSaved">Stones requested</label>
+                            <input id="cSaved" name="stones_requested" type="number" min="1" placeholder="e.g. 20"
+                                required>
+                        </div>
+                        <div class="form-field">
+                            <label for="cOrder">Order / UID (optional)</label>
+                            <input id="cOrder" name="order_id" type="text" placeholder="Optional">
+                        </div>
+                        <div class="form-field form-span-2">
+                            <label for="cNotes">Notes</label>
+                            <input id="cNotes" name="notes" type="text" placeholder="Describe discount / code used">
+                        </div>
+                        <div class="form-field form-span-2">
+                            <label for="cFile">Receipt (optional)</label>
+                            <input id="cFile" name="receipt" type="file" accept=".png,.jpg,.jpeg,.pdf">
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button class="btn-primary" type="submit">Submit Claim</button>
+                        <p class="help-text">We’ll review within 24–48 hours (business days).</p>
+                    </div>
+
+                    <p class="form-note" id="claimNote" hidden>✅ Claim submitted! We’ve emailed admin and logged your
+                        request.</p>
+                </form>
+            </article>
+        </section>
+    </main>
+
+    <!-- FOOTER: same style -->
+    <footer>
+        <div class="container"
+            style="display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:center;">
+            <div style="display:flex; align-items:center; gap:10px;">
+                <div class="brand-logo" aria-hidden="true" style="width:28px;height:28px;border-radius:10px;">
+                    <svg viewBox="0 0 24 24">
+                        <path fill="#fff"
+                            d="M12 2l3.5 6.8 7.5 1.1-5.5 5.2 1.3 7.4L12 18.6 5.2 22.5 6.5 15 1 9.9l7.5-1.1L12 2z" />
+                    </svg>
+                </div>
+                <strong>JLXTrades</strong>
+            </div>
+            <div>© <span id="year"></span> JLXTrades. Perks for futures traders.</div>
+        </div>
+    </footer>
+
+    <!-- Your existing scripts (same order as index.html) -->
+    <script src="app.js"></script>
+    <script src="https://unpkg.com/three@0.160.0/build/three.min.js"></script>
+    <script src="cubefx.js"></script>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Stones logic only (auth + dashboard + claim). No theme/nav code here. -->
+    <script>
+        const SUPABASE_URL = 'https://mbhgjdxiprlxbrzifnwz.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1iaGdqZHhpcHJseGJyemlmbnd6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg4NzA5NDEsImV4cCI6MjA3NDQ0Njk0MX0.dgqHTewgFTYG8XHgmc8gk4IhdrYrf4Z8PVWeVlOA6gg';
+        const sb = window.__sbClient || (window.__sbClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY));
+        document.getElementById('year').textContent = new Date().getFullYear();
+
+        // Sections
+        const authSection = document.getElementById('authSection');
+        const dashSection = document.getElementById('dashSection');
+
+        // Auth elements
+        const tabLogin = document.getElementById('tabLogin');
+        const tabSignup = document.getElementById('tabSignup');
+        const formLogin = document.getElementById('formLogin');
+        const formSignup = document.getElementById('formSignup');
+
+        // Dashboard elements
+        const elBal = document.getElementById('bal');
+        const elTime = document.getElementById('balTime');
+        const txBody = document.querySelector('#txTable tbody');
+        const emailInput = document.getElementById('cEmail');
+        const claimForm = document.getElementById('claimForm');
+
+        function showAuth() { authSection.style.display = ''; dashSection.style.display = 'none'; }
+        function showDash() { authSection.style.display = 'none'; dashSection.style.display = ''; }
+        function fmtDate(d) { return new Date(d).toLocaleString(); }
+        function now() { return new Date().toLocaleTimeString(); }
+
+        async function ensureUser(email) {
+            const ins = await sb.from('users').insert({ email });
+            if (ins.error && !/duplicate key/i.test(ins.error.message)) console.warn('users insert:', ins.error.message);
+        }
+        async function loadBalance(email) {
+            const { data, error } = await sb.from('users').select('stones').eq('email', email).single();
+            if (error && error.code !== 'PGRST116') console.warn('select balance:', error.message);
+            return data?.stones ?? 0;
+        }
+        async function loadTx(email) {
+            const q = await sb.from('transactions').select('*').eq('email', email).order('created_at', { ascending: false }).limit(30);
+            const rows = q.data || [];
+            txBody.innerHTML = rows.length ? '' : `<tr><td colspan="3" class="sub">No activity yet.</td></tr>`;
+            rows.forEach(r => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${fmtDate(r.created_at)}</td>
+                        <td style="font-weight:900; ${r.delta >= 0 ? 'color:var(--accent)' : 'color:tomato'}">${r.delta > 0 ? '+' : ''}${r.delta}</td>
+                        <td>${r.reason || '-'}</td>`;
+                txBody.appendChild(tr);
+            });
+        }
+        async function paintDash(user) {
+            await ensureUser(user.email);
+            const [bal] = await Promise.all([loadBalance(user.email), loadTx(user.email)]);
+            elBal.textContent = bal;
+            elTime.textContent = now();
+            emailInput.value = user.email;
+            // optional badge update if you kept #navStoneBadge
+            const badge = document.getElementById('navStoneBadge');
+            if (badge) { badge.textContent = bal; badge.hidden = bal <= 0; }
+        }
+
+        // Tabs
+        tabLogin.onclick = () => { tabLogin.setAttribute('aria-selected', 'true'); tabSignup.setAttribute('aria-selected', 'false'); formLogin.style.display = ''; formSignup.style.display = 'none'; };
+        tabSignup.onclick = () => { tabSignup.setAttribute('aria-selected', 'true'); tabLogin.setAttribute('aria-selected', 'false'); formSignup.style.display = ''; formLogin.style.display = 'none'; };
+
+        // Sign up
+        formSignup.addEventListener('submit', async e => {
+            e.preventDefault();
+            const email = document.getElementById('signEmail').value.trim();
+            const pass = document.getElementById('signPass').value.trim();
+            const { error } = await sb.auth.signUp({ email, password: pass });
+            if (error) return alert('Sign up error: ' + error.message);
+            const user = (await sb.auth.getUser()).data.user;
+            if (user) { showDash(); paintDash(user); } else { alert('Check your email to confirm, then log in.'); tabLogin.click(); }
+        });
+
+        // Log in
+        formLogin.addEventListener('submit', async e => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+            const { error } = await sb.auth.signInWithPassword({ email, password: pass });
+            if (error) return alert('Login error: ' + error.message);
+            const user = (await sb.auth.getUser()).data.user;
+            showDash(); paintDash(user);
+        });
+
+        // Init
+        (async () => {
+            const { data: { user } } = await sb.auth.getUser();
+            if (user) { showDash(); paintDash(user); } else { showAuth(); }
+        })();
+
+        // Controls
+        document.getElementById('refresh').addEventListener('click', async () => {
+            const { data: { user } } = await sb.auth.getUser();
+            if (user) paintDash(user);
+        });
+        document.getElementById('logout').addEventListener('click', async () => {
+            await sb.auth.signOut();
+            const badge = document.getElementById('navStoneBadge');
+            if (badge) { badge.hidden = true; }
+            showAuth();
+        });
+
+        // Claim form: log pending + email admin
+        const claimFormEl = claimForm;
+        claimFormEl.addEventListener('submit', async e => {
+            e.preventDefault();
+            const { data: { user } } = await sb.auth.getUser();
+            if (!user) return alert('Please log in first.');
+            const item = document.getElementById('cFirm').value.trim() || 'claim_manual';
+            const stones = parseInt(document.getElementById('cSaved').value, 10) || 0;
+            const notes = document.getElementById('cNotes').value.trim();
+            const ins = await sb.from('redemptions').insert({ email: user.email, item_id: item, cost: stones, status: 'pending', notes });
+            if (ins.error) { console.error(ins.error); return alert('Could not log your claim. Please try again.'); }
+
+            const fd = new FormData(claimFormEl);
+            fd.set('_subject', `Stones Claim — ${user.email} — ${item} — ${stones} Stones`);
+            try { await fetch(claimFormEl.action, { method: 'POST', body: fd, mode: 'no-cors' }); } catch (e) { console.warn(e); }
+
+            document.getElementById('claimNote').hidden = false;
+            claimFormEl.reset();
+            document.getElementById('cEmail').value = user.email;
+        });
+    </script>
+</body>
+
+</html>
